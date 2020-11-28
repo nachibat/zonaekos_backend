@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/zonaekos', {
+mongoose.connect(`${process.env.DB_URI}${process.env.DB_NAME}`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,

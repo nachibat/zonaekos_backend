@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const app = express();
 
-// Configuración de cabeceras y CORS (la configuración va antes de las rutas)
+// Configuración de cabeceras y CORS
 app.use(cors({ origin: true, credentials: true }));
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

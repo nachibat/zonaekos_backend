@@ -2,11 +2,12 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 const Usuario = require('../models/usuario.model');
+const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion');
 
 const app = express();
 
 // Listado de usuarios
-app.get('/usuarios', (req, res) => {
+app.get('/usuarios', verificaToken, (req, res) => {
     const desde = Number(req.query.desde) || 0;
     const limite = Number(req.query.limite) || 5;
     Usuario.find({ estado: true })
@@ -30,7 +31,7 @@ app.get('/usuarios', (req, res) => {
 });
 
 // Alta de usuario
-app.post('/usuario', (req, res) => {
+app.post('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
     const body = req.body;
     const usuario = new Usuario({
         fullname: body.fullname,
@@ -53,14 +54,16 @@ app.post('/usuario', (req, res) => {
 });
 
 // Modificacion de usuario
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
     const id = req.params.id;
     const body = _.pick(req.body, ['fullname', 'img', 'role', 'estado']);
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                err
+                err: {
+                    message: 'Can\'t find user'
+                }
             });
         }
         return res.json({
@@ -71,7 +74,7 @@ app.put('/usuario/:id', (req, res) => {
 });
 
 // Eliminacion de usuario (fisica)
-app.delete('/usuario/purge/:id', (req, res) => {
+app.delete('/usuario/purge/:id', [verificaToken, verificaAdminRole], (req, res) => {
     const id = req.params.id;
     Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
         if (err) {
@@ -84,7 +87,7 @@ app.delete('/usuario/purge/:id', (req, res) => {
             return res.status(400).json({
                 ok: false,
                 err: {
-                    message: 'Can not find user'
+                    message: 'Can\'t find user'
                 }
             });
         }
@@ -96,13 +99,15 @@ app.delete('/usuario/purge/:id', (req, res) => {
 });
 
 // Eliminacion de usuario (cambio de estado a false)
-app.delete('/usuario/:id', (req, res) => {
+app.delete('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
     const id = req.params.id;
     Usuario.findByIdAndUpdate(id, { estado: false }, { new: true }, (err, usuarioBorrado) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                err
+                err: {
+                    message: 'Can\'t find user'
+                }
             });
         }
         return res.json({
