@@ -78,7 +78,7 @@ app.delete('/usuario/purge/:id', [verificaToken, verificaAdminRole], (req, res) 
     const id = req.params.id;
     Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
         if (err) {
-            return res.json(400).json({
+            return res.json(500).json({
                 ok: false,
                 err
             });

@@ -8,7 +8,7 @@ process.env.DB_URI = process.env.DB_URI || 'mongodb://localhost/';
 process.env.DB_NAME = process.env.DB_NAME || 'test';
 
 // Vencimiento token
-process.env.CADUCIDAD_TOKEN = 60 * 60 * 24 * 30;
+process.env.CADUCIDAD_TOKEN = '7 days';
 
 // SEED de autenticacion
 process.env.SEED = process.env.SEED || 'este-es-el-seed-desarrollo';
