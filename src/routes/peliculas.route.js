@@ -41,9 +41,11 @@ app.post('/peliculas', [verificaToken, verificaAdminRole], (req, res) => {
 app.get('/peliculas', (req, res) => {
     const desde = Number(req.query.desde) || 0;
     const limite = Number(req.query.limite) || 5;
+    const orden = req.query.orden || ''
     Pelicula.find({})
         .skip(desde)
         .limit(limite)
+        .sort(orden)
         .exec((err, peliculas) => {
             if (err) {
                 return res.status(500).json({

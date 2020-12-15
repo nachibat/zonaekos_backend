@@ -24,7 +24,7 @@ const usuarioSchema = new Schema({
     },
     img: {
         type: String,
-        default: 'av-000.jpg'
+        default: 'av-000.png'
     },
     role: {
         type: String,

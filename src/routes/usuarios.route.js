@@ -6,6 +6,14 @@ const { verificaToken, verificaAdminRole } = require('../middlewares/autenticaci
 
 const app = express();
 
+// Consulta de usuario por token
+app.get('/usuario', verificaToken, (req, res) => {
+    return res.json({
+        ok: true,
+        usuario: req.usuario
+    });
+});
+
 // Listado de usuarios
 app.get('/usuarios', verificaToken, (req, res) => {
     const desde = Number(req.query.desde) || 0;
@@ -57,6 +65,26 @@ app.post('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
 app.put('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
     const id = req.params.id;
     const body = _.pick(req.body, ['fullname', 'img', 'role', 'estado']);
+    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Can\'t find user'
+                }
+            });
+        }
+        return res.json({
+            ok: true,
+            usuario: usuarioDB
+        });
+    });
+});
+
+// Modificar perfil
+app.put('/perfil/:id', verificaToken, (req, res) => {
+    const id = req.params.id;
+    const body = _.pick(req.body, ['fullname', 'img']);
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
         if (err) {
             return res.status(400).json({

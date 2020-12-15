@@ -1,3 +1,6 @@
+// Entorno
+process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+
 // Puerto
 process.env.PORT = process.env.PORT || 3000;
 process.env.SECURE_PORT = process.env.SECURE_PORT || 4000;

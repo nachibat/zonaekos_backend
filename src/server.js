@@ -34,11 +34,12 @@ app.use((req, res, next) => {
 app.use(require('./routes/index.routes'));
 
 // Inicio del server
-
-// app.listen(process.env.PORT, () => {
-//     console.log('Listening on port: ' + process.env.PORT);
-// });
-
-https.createServer(ssl_options, app).listen(process.env.SECURE_PORT, () => {
-    console.log('Listening on secure port: ' + process.env.SECURE_PORT);
-});
+if (process.env.NODE_ENV === 'dev') {
+    app.listen(process.env.PORT, () => {
+        console.log('Listening on port: ' + process.env.PORT);
+    });
+} else {
+    https.createServer(ssl_options, app).listen(process.env.SECURE_PORT, () => {
+        console.log('Listening on secure port: ' + process.env.SECURE_PORT);
+    });
+}
