@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect(`${process.env.DB_URI}${process.env.DB_NAME}`, {
+mongoose.connect(`${process.env.DB_URI}/${process.env.DB_NAME}?authSource=admin`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
