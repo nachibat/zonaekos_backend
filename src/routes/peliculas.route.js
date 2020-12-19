@@ -21,6 +21,7 @@ app.post('/peliculas', [verificaToken, verificaAdminRole], (req, res) => {
         backdrop_path: body.backdrop_path,
         poster_path: body.poster_path,
         stream_link: body.stream_link,
+        stream_link_en: body.stream_link_en,
         download_link: body.download_link
     });
     pelicula.save((err, peliculaDB) => {
@@ -41,7 +42,7 @@ app.post('/peliculas', [verificaToken, verificaAdminRole], (req, res) => {
 app.get('/peliculas', (req, res) => {
     const desde = Number(req.query.desde) || 0;
     const limite = Number(req.query.limite) || 5;
-    const orden = req.query.orden || ''
+    const orden = req.query.orden || '';
     Pelicula.find({})
         .skip(desde)
         .limit(limite)
@@ -63,10 +64,66 @@ app.get('/peliculas', (req, res) => {
         });
 });
 
+// Busqueda por titulo
+app.get('/peliculas/buscar/title/:termino', (req, res) => {
+    const desde = Number(req.query.desde) || 0;
+    const limite = Number(req.query.limite) || 12;
+    const orden = req.query.orden || '';
+    const termino = req.params.termino;
+    const regex = new RegExp(termino, 'i');
+    Pelicula.find({ title: regex })
+        .skip(desde)
+        .limit(limite)
+        .sort(orden)
+        .exec((err, peliculas) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+            Pelicula.countDocuments({ title: regex }, (err, cant) => {
+                res.json({
+                    ok: true,
+                    total_registros: cant,
+                    peliculas
+                });
+            });
+        });
+});
+
+// Busqueda por genero
+app.get('/peliculas/buscar/genre/:termino', (req, res) => {
+    const desde = Number(req.query.desde) || 0;
+    const limite = Number(req.query.limite) || 12;
+    const orden = req.query.orden || '';
+    const termino = req.params.termino;
+    const regex = new RegExp(termino, 'i');
+    Pelicula.find({ genre: regex })
+        .skip(desde)
+        .limit(limite)
+        .sort(orden)
+        .exec((err, peliculas) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+            Pelicula.countDocuments({ genre: regex }, (err, cant) => {
+                res.json({
+                    ok: true,
+                    total_registros: cant,
+                    peliculas
+                });
+            });
+        });
+});
+
 // Modificacion de pelicula
 app.put('/pelicula/:id', [verificaToken, verificaAdminRole], (req, res) => {
     const id = req.params.id;
-    const body = _.pick(req.body, ['title', 'original_title', 'overview', 'publish_date', 'release_date', 'vote_average', 'vote_count', 'genre', 'backdrop_path', 'poster_path', 'stream_link', 'download_link']);
+    const body = _.pick(req.body, ['title', 'original_title', 'overview', 'publish_date', 'release_date', 'vote_average', 'vote_count', 'genre', 'backdrop_path', 'poster_path', 'stream_link', 'stream_link_en', 'download_link']);
     Pelicula.findByIdAndUpdate(id, body, { new: true }, (err, peliculaDB) => {
         if (err) {
             return res.status(500).json({

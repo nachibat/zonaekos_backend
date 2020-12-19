@@ -33,6 +33,10 @@ const peliculaSchema = new Schema({
         type: Number,
         required: [true, 'Vote count required']
     },
+    categoria: {
+        type: String,
+        default: 'general'
+    },
     genre: {
         type: String,
         required: [true, 'Genre required']
@@ -47,11 +51,15 @@ const peliculaSchema = new Schema({
     },
     stream_link: {
         type: String,
-        required: [true, 'Link required']
+        default: null
+    },
+    stream_link_en: {
+        type: String,
+        default: null
     },
     download_link: {
         type: String,
-        default: 'no_link'
+        default: null
     }
 });
 
