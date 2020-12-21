@@ -13,6 +13,7 @@ app.post('/peliculas', [verificaToken, verificaAdminRole], (req, res) => {
         title: body.title,
         original_title: body.original_title,
         overview: body.overview,
+        categoria: body.categoria,
         publish_date: today,
         release_date: body.release_date,
         vote_average: body.vote_average,
@@ -123,7 +124,7 @@ app.get('/peliculas/buscar/genre/:termino', (req, res) => {
 // Modificacion de pelicula
 app.put('/pelicula/:id', [verificaToken, verificaAdminRole], (req, res) => {
     const id = req.params.id;
-    const body = _.pick(req.body, ['title', 'original_title', 'overview', 'publish_date', 'release_date', 'vote_average', 'vote_count', 'genre', 'backdrop_path', 'poster_path', 'stream_link', 'stream_link_en', 'download_link']);
+    const body = _.pick(req.body, ['title', 'original_title', 'overview', 'categoria', 'publish_date', 'release_date', 'vote_average', 'vote_count', 'genre', 'backdrop_path', 'poster_path', 'stream_link', 'stream_link_en', 'download_link']);
     Pelicula.findByIdAndUpdate(id, body, { new: true }, (err, peliculaDB) => {
         if (err) {
             return res.status(500).json({
