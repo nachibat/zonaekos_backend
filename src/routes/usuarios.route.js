@@ -62,7 +62,7 @@ app.post('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
 });
 
 // Modificacion de usuario
-app.put('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
+app.put('/usuario/:id', verificaToken, (req, res) => {
     const id = req.params.id;
     const body = _.pick(req.body, ['fullname', 'img', 'role', 'estado']);
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {

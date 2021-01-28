@@ -87,6 +87,11 @@ app.post('/google', async(req, res) => {
                     }
                 });
             } else {
+                if (usuarioDB.fullname != googleUser.fullname || usuarioDB.img != googleUser.img) {
+                    actualizarDatos(usuarioDB, googleUser);
+                    usuarioDB.fullname = googleUser.fullname;
+                    usuarioDB.img = googleUser.img;
+                }
                 const token = jwt.sign({
                     usuario: usuarioDB
                 }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
@@ -152,6 +157,11 @@ app.post('/facebook', (req, res) => {
                     }
                 });
             } else {
+                if (usuarioDB.fullname != facebookUser.fullname || usuarioDB.img != facebookUser.img) {
+                    actualizarDatos(usuarioDB, facebookUser);
+                    usuarioDB.fullname = facebookUser.fullname;
+                    usuarioDB.img = facebookUser.img;
+                }
                 const token = jwt.sign({
                     usuario: usuarioDB
                 }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
@@ -190,5 +200,21 @@ app.post('/facebook', (req, res) => {
         }
     });
 });
+
+let actualizarDatos = async(usuarioDB, newuser) => {
+    const id = usuarioDB._id;
+    const body = {
+        fullname: newuser.fullname,
+        img: newuser.img
+    };
+    Usuario.findByIdAndUpdate(id, body, { new: true }, (err, newUsuarioDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+    });
+}
 
 module.exports = app;
