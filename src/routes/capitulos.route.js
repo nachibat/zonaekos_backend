@@ -142,4 +142,22 @@ app.put('/capitulos/:id', [verificaToken, verificaAdminRole], (req, res) => {
     });
 });
 
+// Reporte links caidos
+app.put('/capitulo/reporte/:id', verificaToken, (req, res) => {
+    const id = req.params.id;
+    const body = { reported: true };
+    Capitulo.findByIdAndUpdate(id, body, { new: true }, (err, capReportado) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err: { message: 'Can\'t find chapter' }
+            });
+        }
+        return res.json({
+            ok: true,
+            capReportado
+        });
+    });
+});
+
 module.exports = app;
