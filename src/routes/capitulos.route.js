@@ -56,6 +56,26 @@ app.get('/capitulos/listado/:idserie', (req, res) => {
         });
 });
 
+// Totalidad de capitulos en una serie
+app.get('/capitulos/total/:idserie', (req, res) => {
+    const idSerie = req.params.idserie;
+    Capitulo.find({ serie: idSerie })
+        .exec((err, capitulos) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+            Capitulo.countDocuments({ serie: idSerie }, (err, total) => {
+                return res.json({
+                    ok: true,
+                    total
+                });
+            });
+        });
+});
+
 // Alta de capitulos
 app.post('/capitulos', [verificaToken, verificaAdminRole], (req, res) => {
     const body = req.body;
