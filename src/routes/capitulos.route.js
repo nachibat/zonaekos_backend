@@ -180,4 +180,48 @@ app.put('/capitulo/reporte/:id', verificaToken, (req, res) => {
     });
 });
 
+// Restaurar link caido
+app.put('/capitulo/restaurar/:id', [verificaToken, verificaAdminRole], (req, res) => {
+    const id = req.params.id;
+    const body = { reported: false };
+    Capitulo.findByIdAndUpdate(id, body, { new: true }, (err, capRestaurado) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err: { message: 'Can\'t find chapter' }
+            });
+        }
+        return res.json({
+            ok: true,
+            capRestaurado
+        });
+    });
+});
+
+// Listado de links caidos
+app.get('/capitulo/reporte', [verificaToken, verificaAdminRole], (req, res) => {
+    const desde = Number(req.query.desde) || 0;
+    const limite = Number(req.query.limite) || 20;
+    Capitulo.find({ reported: true })
+        .populate({
+            path: 'serie',
+            model: 'Serie',
+            select: { 'title': 1, 'poster_path': 1 }
+        })
+        .skip(desde)
+        .limit(limite)
+        .exec((err, capituloReportado) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+            return res.json({
+                ok: true,
+                capituloReportado
+            });
+        });
+});
+
 module.exports = app;
