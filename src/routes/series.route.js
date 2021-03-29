@@ -48,6 +48,62 @@ app.get('/series', (req, res) => {
         });
 });
 
+// Busqueda por titulo
+app.get('/series/buscar/title/:termino', (req, res) => {
+    const desde = Number(req.query.desde) || 0;
+    const limite = Number(req.query.limite) || 12;
+    const orde = req.query.orden || '';
+    const termino = req.params.termino;
+    const regex = new RegExp(termino, 'i');
+    Serie.find({ title: regex })
+        .skip(desde)
+        .limit(limite)
+        .sort(orde)
+        .exec((err, series) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+            Serie.countDocuments({ title: regex }, (err, cant) => {
+                res.json({
+                    ok: true,
+                    total_registros: cant,
+                    series
+                });
+            })
+        });
+});
+
+// Busqueda por genero
+app.get('/series/buscar/genre/:termino', (req, res) => {
+    const desde = Number(req.query.desde) || 0;
+    const limite = Number(req.query.limite) || 12;
+    const orden = req.params.orden || '';
+    const termino = req.params.termino;
+    const regex = new RegExp(termino, 'i');
+    Serie.find({ genre: regex })
+        .skip(desde)
+        .limit(limite)
+        .sort(orden)
+        .exec((err, series) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+            Serie.countDocuments({ genre: regex }, (err, cant) => {
+                res.json({
+                    ok: true,
+                    total_registros: cant,
+                    series
+                });
+            });
+        });
+});
+
 // Alta de series
 app.post('/series', [verificaToken, verificaAdminRole], (req, res) => {
     const body = req.body;
