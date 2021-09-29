@@ -186,4 +186,21 @@ app.get('/pelicula/:id', (req, res) => {
     });
 });
 
+// Busqueda de pelicula por uri
+app.get('/pelicula/buscar/:uri', (req, res) => {
+    const uri = req.params.uri;
+    Pelicula.findOne({ uri }, (err, peliculaDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+        return res.json({
+            ok: true,
+            peliculaDB
+        });
+    });
+});
+
 module.exports = app;

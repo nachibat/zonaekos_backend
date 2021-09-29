@@ -1,7 +1,5 @@
 const uriTransformation = (cadena) => {
     cadena = cadena.toLocaleLowerCase();
-    // cadena = cadena.replace(/[&\/\\#,+()$~%€.'":*?<>{}ºª!|[\]"@·¬=¡¿;_\-]/g, '');
-    // cadena = cadena.replace(/\s+/g, '-');
     cadena = cadena.toLocaleLowerCase();
     cadena = cadena.replace(/[`´ç&\/\\#,+()$~%€.'":*?<>{}ºª!|[\]"@·¬=¡¿;_\-]/g, '');
     cadena = cadena.replace(/[àá]/g, 'a');

@@ -23,6 +23,23 @@ app.get('/series/:id', (req, res) => {
     });
 });
 
+// Busqueda de serie por uri
+app.get('/series/buscar/uri/:uri', (req, res) => {
+    const uri = req.params.uri;
+    Serie.findOne({ uri }, (err, serieEncontrada) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+        return res.json({
+            ok: true,
+            serieEncontrada
+        });
+    });
+});
+
 // Listado de series
 app.get('/series', (req, res) => {
     const desde = Number(req.query.desde) || 0;
