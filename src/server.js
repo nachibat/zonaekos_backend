@@ -16,9 +16,9 @@ const app = express();
 
 
 // Configuracion del BodyParser
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// const bodyParser = require('body-parser');
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Configuración de cabeceras y CORS
 app.use(cors({ origin: true, credentials: true }));

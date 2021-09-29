@@ -1,6 +1,7 @@
 const express = require('express');
 const Pelicula = require('../models/pelicula.model');
 const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion');
+const { uriTransformation } = require('../helpers/strings');
 const _ = require('underscore');
 
 const app = express();
@@ -8,10 +9,12 @@ const app = express();
 // Alta de pelicula
 app.post('/peliculas', [verificaToken, verificaAdminRole], (req, res) => {
     const body = req.body;
+    const uri = uriTransformation(body.title);
     const today = new Date().toISOString().slice(0, 10);
     const pelicula = new Pelicula({
         title: body.title,
         original_title: body.original_title,
+        uri,
         overview: body.overview,
         categoria: body.categoria,
         publish_date: today,
@@ -124,7 +127,9 @@ app.get('/peliculas/buscar/genre/:termino', (req, res) => {
 // Modificacion de pelicula
 app.put('/pelicula/:id', [verificaToken, verificaAdminRole], (req, res) => {
     const id = req.params.id;
-    const body = _.pick(req.body, ['title', 'original_title', 'overview', 'categoria', 'publish_date', 'release_date', 'vote_average', 'vote_count', 'genre', 'backdrop_path', 'poster_path', 'stream_link', 'stream_link_en', 'download_link']);
+    const uri = uriTransformation(req.body.title);
+    let body = _.pick(req.body, ['title', 'original_title', 'overview', 'categoria', 'publish_date', 'release_date', 'vote_average', 'vote_count', 'genre', 'backdrop_path', 'poster_path', 'stream_link', 'stream_link_en', 'download_link']);
+    body.uri = uri;
     Pelicula.findByIdAndUpdate(id, body, { new: true }, (err, peliculaDB) => {
         if (err) {
             return res.status(500).json({

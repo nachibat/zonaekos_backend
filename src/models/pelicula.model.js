@@ -13,6 +13,11 @@ const peliculaSchema = new Schema({
         type: String,
         required: [true, 'Original title required']
     },
+    uri: {
+        type: String,
+        unique: true,
+        required: [true, 'Uri required']
+    },
     overview: {
         type: String,
         required: [true, 'Overview required']

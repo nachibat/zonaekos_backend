@@ -8,6 +8,11 @@ const serieSchema = new Schema({
         required: [true, 'Title required']
     },
     original_title: String,
+    uri: {
+        type: String,
+        unique: true,
+        required: [true, 'Uri required']
+    },
     overview: String,
     categoria: {
         type: String,

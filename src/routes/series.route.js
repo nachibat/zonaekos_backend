@@ -1,6 +1,7 @@
 const express = require('express');
 const Serie = require('../models/serie.model');
 const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion');
+const { uriTransformation } = require('../helpers/strings');
 const _ = require('underscore');
 
 const app = express();
@@ -107,10 +108,12 @@ app.get('/series/buscar/genre/:termino', (req, res) => {
 // Alta de series
 app.post('/series', [verificaToken, verificaAdminRole], (req, res) => {
     const body = req.body;
+    const uri = uriTransformation(body.title);
     const today = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)); // Formato para la zona horaria de argentina
     const serie = new Serie({
         title: body.title,
         original_title: body.original_title,
+        uri,
         overview: body.overview,
         categoria: body.categoria,
         genre: body.genre,
@@ -158,7 +161,9 @@ app.delete('/series/:id', [verificaToken, verificaAdminRole], (req, res) => {
 // Modificacion de series
 app.put('/series/:id', [verificaToken, verificaAdminRole], (req, res) => {
     const id = req.params.id;
-    const body = _.pick(req.body, ['title', 'original_title', 'overview', 'categoria', 'genre', 'poster_path', 'backdrop_path']);
+    const uri = uriTransformation(req.body.title);
+    let body = _.pick(req.body, ['title', 'original_title', 'overview', 'categoria', 'genre', 'poster_path', 'backdrop_path']);
+    body.uri = uri;
     Serie.findByIdAndUpdate(id, body, { new: true }, (err, serieModificada) => {
         if (err) {
             return res.status(500), json({
