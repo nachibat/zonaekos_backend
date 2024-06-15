@@ -19,3 +19,7 @@ process.env.SEED = process.env.SEED || 'este-es-el-seed-desarrollo';
 
 // Clients ID
 process.env.GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || 'xxx-xxxxxxxx.apps.googleusercontent.com';
+
+// Certificados
+process.env.KEY = process.env.KEY || './privkey.pem';
+process.env.CERT = process.env.CERT || './fullchain.pem';
